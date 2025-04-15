@@ -204,8 +204,9 @@ html, body {
   }
   .form-check {
     text-align: left;
-    margin-left: 25%;  /* Aligns with the Google button */
-    width: 50%;        /* Matches the Google button width */
+    margin-left: 0;  /* Remove the margin to align with labels */
+    width: 100%;     /* Full width */
+    margin-top: 0.5rem;
 }
 
 .user-section .form-check-label {
@@ -382,7 +383,16 @@ html, body {
 
 /* Form input transitions */
 .form-control {
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    height: 45px;  /* Set consistent height for all form controls */
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #2f6b2f;
+    box-shadow: 0 0 0 0.2rem rgba(47, 107, 47, 0.25);
 }
 
 /* Alert transitions */
@@ -393,5 +403,15 @@ html, body {
 /* Optional: Add loading transition */
 .spinner-border {
     transition: opacity 0.2s ease;
+}
+
+.password-field-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.show-password-check {
+    margin-left: 0;
+    padding-left: 0;
 }
   

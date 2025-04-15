@@ -546,9 +546,9 @@ const MyResearch = () => {
                     You need to have an approved team before you can submit research papers.
                     Please set up your team first.
                   </p>
-                  <a href="/student/project-members" className="btn btn-primary mt-2">
-                    <i className="fas fa-user-plus me-2"></i>
-                    Go to Manage Members
+                  <a href="/student/project-members" className="btn btn-success mt-2">
+                    <i className="fas fa-user-plus me-2 text-white"></i>
+                    <span className="text-white">Go to Manage Members</span>
                   </a>
                 </div>
               </div>

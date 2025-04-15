@@ -32,7 +32,13 @@
                 message: props => `${props.value} is not a valid permission`
             }
         }],
-        uid: { type: String, required: true },
+        uid: { 
+            type: String, 
+            required: true,
+            default: function() {
+                return Date.now().toString(); // Generate a unique ID if not provided
+            }
+        },
         isActive: { type: Boolean, default: true },
         lastLogin: { type: Date },
         createdAt: { type: Date, default: Date.now }
@@ -40,14 +46,22 @@
 
     // Password hashing middleware
     adminSchema.pre('save', async function(next) {
-        // Only hash password if it's a new document
-        if (!this.isNew) return next();
+        // Skip hashing if the password is already hashed
+        if (this.password.startsWith('$2b$')) {
+            console.log('Password is already hashed, skipping hash middleware');
+            return next();
+        }
+        
+        // Only hash password if it's modified or new
+        if (!this.isModified('password') && !this.isNew) return next();
         
         try {
+            console.log('Hashing password in pre-save middleware');
             const salt = await bcrypt.genSalt(10);
             this.password = await bcrypt.hash(this.password, salt);
             next();
         } catch (error) {
+            console.error('Error in password hashing middleware:', error);
             next(error);
         }
     });

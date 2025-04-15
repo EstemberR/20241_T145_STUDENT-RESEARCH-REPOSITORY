@@ -588,46 +588,71 @@ adminRoutes.post('/create-admin', authenticateToken, async (req, res) => {
             });
         }
 
-        const { name, email, password } = req.body;
+        const { name, email, password, permissions } = req.body;
+        
+        // Check if required fields are provided
+        if (!name || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Name, email and password are required'
+            });
+        }
 
-        // Log the password before and after hashing
-        console.log('Before hashing:', {
-            originalPassword: password,
-            passwordLength: password.length
-        });
+        // Check if admin with this email already exists
+        const existingAdmin = await Admin.findOne({ email });
+        if (existingAdmin) {
+            return res.status(400).json({
+                success: false,
+                message: 'An admin with this email already exists'
+            });
+        }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Generate a unique ID
+        const uid = Date.now().toString();
+        console.log("Generated UID:", uid);
 
-        console.log('After hashing:', {
-            hashedPassword: hashedPassword,
-            hashedLength: hashedPassword.length,
-            isHashed: hashedPassword.startsWith('$2b$')
-        });
-
-        // Create new admin with hashed password
+        // Create a new admin
         const newAdmin = new Admin({
             name,
             email,
-            password: hashedPassword
+            password, // Will be hashed by the middleware
+            permissions: permissions || [],
+            uid,
+            isActive: true,
+            role: 'admin'
         });
 
+        // Log admin object before saving
+        console.log("Admin object before save:", {
+            _id: newAdmin._id,
+            name: newAdmin.name,
+            email: newAdmin.email,
+            uid: newAdmin.uid,
+            permissions: newAdmin.permissions
+        });
+
+        // Save the admin
         await newAdmin.save();
-
-        // Log the saved admin's password
-        console.log('Saved in database:', {
-            savedPassword: newAdmin.password,
-            isSameAsHashed: newAdmin.password === hashedPassword
-        });
+        console.log("Admin saved successfully:", newAdmin._id);
 
         res.status(201).json({
             success: true,
             message: 'Admin created successfully',
-            passwordIsHashed: newAdmin.password.startsWith('$2b$')
+            admin: {
+                id: newAdmin._id,
+                name: newAdmin.name,
+                email: newAdmin.email,
+                permissions: newAdmin.permissions
+            }
         });
 
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Error creating admin:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error creating admin account', 
+            error: error.message 
+        });
     }
 });
 

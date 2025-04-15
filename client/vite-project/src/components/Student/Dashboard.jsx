@@ -214,9 +214,9 @@ const StudentDashboard = () => {
               </div>
               <div className="card-body">
                 <p className="mb-3">You need to form a team before you can submit research papers.</p>
-                <Link to="/manage-members" className="btn btn-primary">
-                  <i className="fas fa-users me-2"></i>
-                  Manage Team Members
+                <Link to="/manage-members" className="btn btn-success">
+                  <i className="fas fa-users me-2 text-white"></i>
+                  <span className="text-white">Manage Team Members</span>
                 </Link>
               </div>
             </div>

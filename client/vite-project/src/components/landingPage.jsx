@@ -109,16 +109,16 @@ const LandingPage = () => {
         <div className="container-fluid">
           <div className="navbar-brand landing-page-nav-brand">
             <img src={casLogo} alt="Department Logo" height="50" style={{borderRadius: '50%'}}/>
-            <span className="ms-3" style={{ fontWeight: 'bold' }}>Student Research Repository</span>
+            <span className="ms-3" style={{ fontWeight: 'bold', color: 'black', fontSize: '1.5rem' }}>Student Research Repository</span>
           </div>
           <div className="nav-links">
-            <button className="landing-page-nav-button" onClick={handleAboutShow}>
+            <button className="landing-page-nav-button" onClick={handleAboutShow} style={{ color: 'black', fontWeight: 'bold', fontSize: '1.1rem' }}>
               About
             </button>
-            <button className="landing-page-nav-button" onClick={handleFeaturesShow}>
+            <button className="landing-page-nav-button" onClick={handleFeaturesShow} style={{ color: 'black', fontWeight: 'bold', fontSize: '1.1rem' }}>
               Features
             </button>
-            <button className="landing-page-login-button" onClick={() => navigate('/login')}>
+            <button className="landing-page-login-button" onClick={() => navigate('/login')} style={{ color: 'black', fontWeight: 'bold', fontSize: '1.1rem' }}>
               <i className="fas fa-sign-in-alt me-2"></i>
               Sign In
             </button>

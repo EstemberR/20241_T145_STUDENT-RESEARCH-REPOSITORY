@@ -59,6 +59,33 @@ const SuperAdminManageAdmins = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [checkingForAdmin, setCheckingForAdmin] = useState(false);
+
+    // Function to check if an admin was created
+    const checkIfAdminWasCreated = async (email) => {
+      try {
+        setCheckingForAdmin(true);
+        const token = getToken();
+        const checkResponse = await fetch('http://localhost:8000/admin/admins', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (checkResponse.ok) {
+          const data = await checkResponse.json();
+          // Check if an admin with the submitted email exists
+          return data.admins && data.admins.some(admin => admin.email === email);
+        }
+        return false;
+      } catch (checkError) {
+        console.error('Error checking if admin was created:', checkError);
+        return false;
+      } finally {
+        setCheckingForAdmin(false);
+      }
+    };
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -84,6 +111,13 @@ const SuperAdminManageAdmins = () => {
       setLoading(true);
       setError('');
 
+      // Validate form data
+      if (formData.permissions.length === 0) {
+        setError('Please select at least one permission');
+        setLoading(false);
+        return;
+      }
+
       const submitData = {
         ...formData,
         permissions: formData.permissions
@@ -103,15 +137,40 @@ const SuperAdminManageAdmins = () => {
           }
         );
 
+        console.log('Server response:', response.data);
+        
         if (response.data.success) {
           setFormData({ name: '', email: '', password: '', permissions: [] });
-          alert('Admin created successfully!');
+          setAlert({
+            show: true,
+            message: 'Admin created successfully!',
+            type: 'success'
+          });
           if (onSuccess) onSuccess();
           onHide();
+          return;
         }
       } catch (err) {
         console.error('Error creating admin:', err);
-        setError(err.response?.data?.message || 'Something went wrong');
+        
+        // Check if admin was created despite the error
+        const adminCreated = await checkIfAdminWasCreated(formData.email);
+        if (adminCreated) {
+          console.log('Admin was created despite the error');
+          setFormData({ name: '', email: '', password: '', permissions: [] });
+          setAlert({
+            show: true,
+            message: 'Admin was created successfully!',
+            type: 'success'
+          });
+          if (onSuccess) onSuccess();
+          onHide();
+          return;
+        }
+        
+        // If admin was not created, show the error
+        const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Something went wrong';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -532,7 +591,7 @@ const SuperAdminManageAdmins = () => {
                                   disabled={isProcessing}
                                   title="Edit Permissions"
                                 >
-                                  <i className="fas fa-key"></i>
+                                  <i className="fas fa-key text-white"></i>
                                 </button>
                               </div>
                             </td>

@@ -369,8 +369,7 @@ const Login = () => {
                             <label htmlFor="emailInput">Email address</label>
                         </div>
 
-                        <div className="form-group mb-3">
-                            <label htmlFor="password">Password</label>
+                        <div className="form-floating mb-3">
                             <input
                                 type={showPassword ? "text" : "password"}
                                 className="form-control"
@@ -380,19 +379,21 @@ const Login = () => {
                                 onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                                 required
                             />
-                        </div>
-
-                        <div className="form-check mb-3">
-                            <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id="showPassword"
-                                checked={showPassword}
-                                onChange={togglePasswordVisibility}
-                            />
-                            <label className="form-check-label" htmlFor="showPassword">
-                                Show Password
-                            </label>
+                            <label htmlFor="password">Password</label>
+                            <div className="show-password-check">
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        id="showPassword"
+                                        checked={showPassword}
+                                        onChange={togglePasswordVisibility}
+                                    />
+                                    <label className="form-check-label" htmlFor="showPassword">
+                                        Show Password
+                                    </label>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="recaptcha-container">
